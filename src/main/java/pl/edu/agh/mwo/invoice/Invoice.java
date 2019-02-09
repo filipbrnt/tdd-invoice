@@ -26,10 +26,10 @@ public class Invoice {
 		}
 	}
 
-	public BigDecimal getSubtotal() {
-		BigDecimal subtotal = new BigDecimal("0");
+	public BigDecimal getNetTotal() {
+		BigDecimal subtotal = BigDecimal.ZERO;
 		if (!products.isEmpty())
-			for (Product product : products) {
+			for (Product product : this.products) {
 				subtotal = subtotal.add(product.getPrice());
 			}			
 		return subtotal;
@@ -38,7 +38,7 @@ public class Invoice {
 	public BigDecimal getTax() {
 		BigDecimal tax = BigDecimal.ZERO;
 		if (!products.isEmpty())
-			for (Product product : products) {
+			for (Product product : this.products) {
 				tax = tax.add(product.getPrice().multiply(product.getTaxPercent()));
 			}
 		return tax;
@@ -48,6 +48,6 @@ public class Invoice {
 		if (products.isEmpty()) {
 			return BigDecimal.ZERO;			
 		}
-		return this.getSubtotal().add(this.getTax());
+		return this.getNetTotal().add(this.getTax());
 	}
 }

@@ -23,7 +23,7 @@ public class InvoiceTest {
 
 	@Test
 	public void testEmptyInvoiceHasEmptySubtotal() {
-		Assert.assertThat(BigDecimal.ZERO, Matchers.comparesEqualTo(invoice.getSubtotal()));
+		Assert.assertThat(BigDecimal.ZERO, Matchers.comparesEqualTo(invoice.getNetTotal()));
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class InvoiceTest {
 	public void testInvoiceHasTheSameSubtotalAndTotalIfTaxIsZero() {
 		Product taxFreeProduct = new TaxFreeProduct("Warzywa", new BigDecimal("199.99"));
 		invoice.addProduct(taxFreeProduct);
-		Assert.assertThat(invoice.getTotal(), Matchers.comparesEqualTo(invoice.getSubtotal()));
+		Assert.assertThat(invoice.getTotal(), Matchers.comparesEqualTo(invoice.getNetTotal()));
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class InvoiceTest {
 		invoice.addProduct(new TaxFreeProduct("Owoce", new BigDecimal("200")));
 		invoice.addProduct(new DairyProduct("Maslanka", new BigDecimal("100")));
 		invoice.addProduct(new OtherProduct("Wino", new BigDecimal("10")));
-		Assert.assertThat(new BigDecimal("310"), Matchers.comparesEqualTo(invoice.getSubtotal()));
+		Assert.assertThat(new BigDecimal("310"), Matchers.comparesEqualTo(invoice.getNetTotal()));
 	}
 
 	@Test
@@ -81,7 +81,7 @@ public class InvoiceTest {
 		invoice.addProduct(new DairyProduct("Kozi Serek", new BigDecimal("10")), 3);
 		// 1000x pinezka - price: 10
 		invoice.addProduct(new OtherProduct("Pinezka", new BigDecimal("0.01")), 1000);
-		Assert.assertThat(new BigDecimal("50"), Matchers.comparesEqualTo(invoice.getSubtotal()));
+		Assert.assertThat(new BigDecimal("50"), Matchers.comparesEqualTo(invoice.getNetTotal()));
 	}
 
 	@Test
