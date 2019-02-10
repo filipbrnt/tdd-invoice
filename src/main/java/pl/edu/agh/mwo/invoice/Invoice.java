@@ -52,4 +52,17 @@ public class Invoice {
 	public Integer getNumber() {
 		return this.number;
 	}
+	
+	public Map<Product, Integer> getProducts() {
+		return products;
+	}
+	
+	public String getAsText() {
+		String result = "nr " + getNumber().toString() + "\n";
+		for (Product product : products.keySet()) {
+			result += product.getName() + " " + product.getPrice().toString() + " " + products.get(product).toString() + "\n";
+		}
+		result += "Liczba pozycji: " + products.size() + "\n";
+		return result;
+	}
 }
