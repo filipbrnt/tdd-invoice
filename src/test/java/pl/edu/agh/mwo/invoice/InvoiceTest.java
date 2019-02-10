@@ -105,42 +105,39 @@ public class InvoiceTest {
 	public void testInvoiceWithNegativeQuantity() {
 		invoice.addProduct(new DairyProduct("Zsiadle mleko", new BigDecimal("5.55")), -1);
 	}
-	
+
 	@Test
 	public void testInvoiceHasNumber() {
 		Integer number = invoice.getNumber();
 		Assert.assertNotNull(number);
 	}
-	
+
 	@Test
 	public void testInvoiceNumberIsGraterThanZero() {
 		Integer number = invoice.getNumber();
 		Assert.assertThat(number, Matchers.greaterThan(0));
 	}
-	
+
 	@Test
 	public void testInvoiceNumbersAreDifferent() {
 		Integer number1 = invoice.getNumber();
 		Integer number2 = new Invoice().getNumber();
 		Assert.assertNotEquals(number1, number2);
 	}
-	
+
 	@Test
 	public void testNextInvoiceHasGreaterNumber() {
 		Integer number1 = invoice.getNumber();
 		Integer number2 = new Invoice().getNumber();
 		Assert.assertThat(number1, Matchers.lessThan(number2));
 	}
-	
+
 	@Test
 	public void testPrintedInvoiceHasNumber() {
 		String printedInvoice = invoice.getAsText();
 		String number = invoice.getNumber().toString();
-		Assert.assertThat(
-				printedInvoice,
-				Matchers.containsString("nr " + number));
+		Assert.assertThat(printedInvoice, Matchers.containsString("nr " + number));
 	}
-	
 
 	@Test
 	public void testPrintedInvoiceHasProductName() {
@@ -148,47 +145,35 @@ public class InvoiceTest {
 		invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal(1678)), 1);
 		String printedInvoice = invoice.getAsText();
 		for (Product product : invoice.getProducts().keySet()) {
-			Assert.assertThat(
-					printedInvoice,
-					Matchers.containsString(product.getName()));
+			Assert.assertThat(printedInvoice, Matchers.containsString(product.getName()));
 		}
 	}
-	
+
 	@Test
 	public void testPrintedInvoiceHasProductPrice() {
 		invoice.addProduct(new DairyProduct("Chleb", new BigDecimal(2.5)), 2);
 		invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal(1678)), 1);
 		String printedInvoice = invoice.getAsText();
 		for (Product product : invoice.getProducts().keySet()) {
-			Assert.assertThat(
-					printedInvoice,
-					Matchers.containsString(product.getPrice().toString()));
+			Assert.assertThat(printedInvoice, Matchers.containsString(product.getPrice().toString()));
 		}
 	}
-	
+
 	@Test
 	public void testPrintedInvoiceHasProductQuantity() {
 		invoice.addProduct(new DairyProduct("Chleb", new BigDecimal(2.5)), 2);
 		invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal(1678)), 1);
 		String printedInvoice = invoice.getAsText();
 		for (Product product : invoice.getProducts().keySet()) {
-			Assert.assertThat(
-					printedInvoice,
-					Matchers.containsString(invoice.getProducts().get(product).toString()));
+			Assert.assertThat(printedInvoice, Matchers.containsString(invoice.getProducts().get(product).toString()));
 		}
 	}
-	
+
 	@Test
 	public void testPintedInvoiceContainsFooter() {
 		String printedInvoice = invoice.getAsText();
 		int size = invoice.getProducts().size();
-		
-		Assert.assertThat(
-				printedInvoice,
-				Matchers.containsString("Liczba pozycji: " + size));
+		Assert.assertThat(printedInvoice, Matchers.containsString("Liczba pozycji: " + size));
+	}
 
-	}	
-	
-	
-	
 }
