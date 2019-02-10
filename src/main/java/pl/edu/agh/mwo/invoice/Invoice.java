@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import pl.edu.agh.mwo.invoice.product.ExciseProduct;
 import pl.edu.agh.mwo.invoice.product.Product;
 
 public class Invoice {
@@ -28,7 +29,7 @@ public class Invoice {
 			Integer currentQuantity = this.products.get(product);
 			this.products.put(product, currentQuantity + quantity);
 		} else {
-			this.products.put(product, quantity);			
+			this.products.put(product, quantity);
 		}
 	}
 
@@ -49,6 +50,8 @@ public class Invoice {
 		BigDecimal totalGross = BigDecimal.ZERO;
 		for (Product product : products.keySet()) {
 			BigDecimal quantity = new BigDecimal(products.get(product));
+			if (product instanceof ExciseProduct)
+				((ExciseProduct) product).addExcise();
 			totalGross = totalGross.add(product.getPriceWithTax().multiply(quantity));
 		}
 		return totalGross;

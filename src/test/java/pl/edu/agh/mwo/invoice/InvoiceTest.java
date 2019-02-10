@@ -7,12 +7,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pl.edu.agh.mwo.invoice.Invoice;
+import pl.edu.agh.mwo.invoice.product.BottleOfWine;
 import pl.edu.agh.mwo.invoice.product.DairyProduct;
+import pl.edu.agh.mwo.invoice.product.FuelCanister;
 import pl.edu.agh.mwo.invoice.product.OtherProduct;
 import pl.edu.agh.mwo.invoice.product.Product;
-import pl.edu.agh.mwo.invoice.product.ProductTest;
 import pl.edu.agh.mwo.invoice.product.TaxFreeProduct;
+import pl.edu.agh.mwo.utils.DateUtils;
 
 public class InvoiceTest {
 	private Invoice invoice;
@@ -172,13 +173,50 @@ public class InvoiceTest {
 		int size = invoice.getProducts().size();
 		Assert.assertThat(printedInvoice, Matchers.containsString("Liczba pozycji: " + size));
 	}
-	
+
 	@Test
 	public void testAddingTheSameProductTwice() {
 		invoice.addProduct(new DairyProduct("Chleb", new BigDecimal(5)));
 		invoice.addProduct(new DairyProduct("Chleb", new BigDecimal(5)));
-		Assert.assertThat(
-				invoice.getAsText(),
-				Matchers.containsString("Chleb 2 5.00"));
+		Assert.assertThat(invoice.getAsText(), Matchers.containsString("Chleb 2 5.00"));
+	}
+
+	@Test
+	public void testAddExciseForExciseProduct() {
+		Product wine = new BottleOfWine("La Crema Sonoma Coast Pinot Noir", new BigDecimal(50));
+		invoice.addProduct(wine);
+		BigDecimal expectedPrice = new BigDecimal("55.56").multiply(new BigDecimal("1")
+				.add(wine.getTaxPercent()));
+		Assert.assertEquals(expectedPrice, invoice.getGrossTotal());
+	}
+	
+	@Test
+	public void testGrossTotalForMultipleExciseProducts() {
+		Product wine = new BottleOfWine("La Crema Sonoma Coast Pinot Noir", new BigDecimal(50));
+		invoice.addProduct(wine, 3);
+		BigDecimal expectedPrice = new BigDecimal("55.56").multiply(new BigDecimal("3"))
+				.multiply(new BigDecimal("1")
+				.add(wine.getTaxPercent()));
+		Assert.assertEquals(expectedPrice, invoice.getGrossTotal());
+	}
+
+	@Test
+	public void testDontAddExciseForFuelOnMincerzsDay() {
+		if (DateUtils.isMintersDay()) {
+			Product fuel = new FuelCanister("PB98", new BigDecimal("1.24"));
+			invoice.addProduct(fuel);
+			BigDecimal expectedValue = new BigDecimal("6.80").multiply(new BigDecimal("1")
+					.add(fuel.getTaxPercent()));
+			Assert.assertEquals(expectedValue, invoice.getGrossTotal());			
+		}
+	}
+
+	@Test
+	public void testGrossTotalWithExciseForMoreThanOneProduct() {
+		Product fuel = new FuelCanister("PB98", new BigDecimal("1.24"));
+		invoice.addProduct(fuel, 4);
+		BigDecimal expectedValue = new BigDecimal("6.80").multiply(new BigDecimal("4"))
+				.multiply(new BigDecimal("1").add(fuel.getTaxPercent()));
+		Assert.assertEquals(expectedValue, invoice.getGrossTotal());
 	}
 }
