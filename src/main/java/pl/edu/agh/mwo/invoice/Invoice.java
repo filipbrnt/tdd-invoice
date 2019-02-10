@@ -11,11 +11,11 @@ public class Invoice {
 	private Map<Product, Integer> products = new HashMap<Product, Integer>();
 	private int number;
 	private static Integer nextNumber = 1;
-	
+
 	public Invoice() {
 		this.number = nextNumber++;
 	}
-	
+
 	public void addProduct(Product product) {
 		addProduct(product, 1);
 	}
@@ -52,15 +52,16 @@ public class Invoice {
 	public Integer getNumber() {
 		return this.number;
 	}
-	
+
 	public Map<Product, Integer> getProducts() {
 		return products;
 	}
-	
+
 	public String getAsText() {
 		String result = "nr " + getNumber().toString() + "\n";
 		for (Product product : products.keySet()) {
-			result += product.getName() + " " + product.getPrice().toString() + " " + products.get(product).toString() + "\n";
+			result += product.getName() + " " + product.getPrice().toString()
+					+ " " + products.get(product).toString() + "\n";
 		}
 		result += "Liczba pozycji: " + products.size() + "\n";
 		return result;
