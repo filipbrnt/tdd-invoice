@@ -11,6 +11,7 @@ import pl.edu.agh.mwo.invoice.Invoice;
 import pl.edu.agh.mwo.invoice.product.DairyProduct;
 import pl.edu.agh.mwo.invoice.product.OtherProduct;
 import pl.edu.agh.mwo.invoice.product.Product;
+import pl.edu.agh.mwo.invoice.product.ProductTest;
 import pl.edu.agh.mwo.invoice.product.TaxFreeProduct;
 
 public class InvoiceTest {
@@ -130,5 +131,64 @@ public class InvoiceTest {
 		Integer number2 = new Invoice().getNumber();
 		Assert.assertThat(number1, Matchers.lessThan(number2));
 	}
+	
+	@Test
+	public void testPrintedInvoiceHasNumber() {
+		String printedInvoice = invoice.getAsText();
+		String number = invoice.getNumber().toString();
+		Assert.assertThat(
+				printedInvoice,
+				Matchers.containsString("nr " + number));
+	}
+	
+
+	@Test
+	public void testPrintedInvoiceHasProductName() {
+		invoice.addProduct(new DairyProduct("Chleb", new BigDecimal(2.5)), 2);
+		invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal(1678)), 1);
+		String printedInvoice = invoice.getAsText();
+		for (Product product : invoice.getProducts().keySet()) {
+			Assert.assertThat(
+					printedInvoice,
+					Matchers.containsString(product.getName()));
+		}
+	}
+	
+	@Test
+	public void testPrintedInvoiceHasProductPrice() {
+		invoice.addProduct(new DairyProduct("Chleb", new BigDecimal(2.5)), 2);
+		invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal(1678)), 1);
+		String printedInvoice = invoice.getAsText();
+		for (Product product : invoice.getProducts().keySet()) {
+			Assert.assertThat(
+					printedInvoice,
+					Matchers.containsString(product.getPrice().toString()));
+		}
+	}
+	
+	@Test
+	public void testPrintedInvoiceHasProductQuantity() {
+		invoice.addProduct(new DairyProduct("Chleb", new BigDecimal(2.5)), 2);
+		invoice.addProduct(new TaxFreeProduct("Tablet", new BigDecimal(1678)), 1);
+		String printedInvoice = invoice.getAsText();
+		for (Product product : invoice.getProducts().keySet()) {
+			Assert.assertThat(
+					printedInvoice,
+					Matchers.containsString(invoice.getProducts().get(product).toString()));
+		}
+	}
+	
+	@Test
+	public void testPintedInvoiceContainsFooter() {
+		String printedInvoice = invoice.getAsText();
+		int size = invoice.getProducts().size();
+		
+		Assert.assertThat(
+				printedInvoice,
+				Matchers.containsString("Liczba pozycji: " + size));
+
+	}	
+	
+	
 	
 }
