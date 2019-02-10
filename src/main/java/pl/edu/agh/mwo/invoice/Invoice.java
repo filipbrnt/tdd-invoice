@@ -1,9 +1,9 @@
 package pl.edu.agh.mwo.invoice;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import pl.edu.agh.mwo.invoice.product.Product;
 
@@ -58,12 +58,19 @@ public class Invoice {
 	}
 
 	public String getAsText() {
-		String result = "nr " + getNumber().toString() + "\n";
+		DecimalFormat df = new DecimalFormat("0.00");
+		StringBuilder sb = new StringBuilder("");
+		sb.append("nr " + getNumber().toString() + "\n");
 		for (Product product : products.keySet()) {
-			result += product.getName() + " " + product.getPrice().toString()
-					+ " " + products.get(product).toString() + "\n";
+			String quantity = products.get(product).toString();
+			sb.append(product.getName());
+			sb.append(" ");
+			sb.append(quantity);
+			sb.append(" ");
+			sb.append(df.format(product.getPrice()));
+			sb.append("\n");
 		}
-		result += "Liczba pozycji: " + products.size() + "\n";
-		return result;
+		sb.append("Liczba pozycji: " + products.size() + "\n");
+		return sb.toString();
 	}
 }
