@@ -172,5 +172,13 @@ public class InvoiceTest {
 		int size = invoice.getProducts().size();
 		Assert.assertThat(printedInvoice, Matchers.containsString("Liczba pozycji: " + size));
 	}
-
+	
+	@Test
+	public void testAddingTheSameProductTwice() {
+		invoice.addProduct(new DairyProduct("Chleb", new BigDecimal(5)));
+		invoice.addProduct(new DairyProduct("Chleb", new BigDecimal(5)));
+		Assert.assertThat(
+				invoice.getAsText(),
+				Matchers.containsString("Chleb 2 5.00"));
+	}
 }

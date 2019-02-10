@@ -24,7 +24,12 @@ public class Invoice {
 		if (product == null || quantity <= 0) {
 			throw new IllegalArgumentException();
 		}
-		products.put(product, quantity);
+		if (this.products.containsKey(product)) {
+			Integer currentQuantity = this.products.get(product);
+			this.products.put(product, currentQuantity + quantity);
+		} else {
+			this.products.put(product, quantity);			
+		}
 	}
 
 	public BigDecimal getNetTotal() {
